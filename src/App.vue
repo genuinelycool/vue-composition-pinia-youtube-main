@@ -11,37 +11,44 @@ let tasks = reactive([
     name: "Website design",
     description: "Define the style guide, branding and create the webdesign on Figma.",
     completed: true,
+    id: 1,
   },
   {
     name: "Website development",
     description: "Develop the portfolio website using Vue JS.",
     completed: false,
+    id: 2,
   },
   {
     name: "Hosting and infrastructure",
     description: "Define hosting, domain and infrastructure for the portfolio website.",
     completed: false,
+    id: 3,
   },
   {
     name: "Composition API",
     description:
       "Learn how to use the composition API and how it compares to the options API.",
     completed: true,
+    id: 4,
   },
   {
     name: "Pinia",
     description: "Learn how to setup a store using Pinia.",
     completed: true,
+    id: 5,
   },
   {
     name: "Groceries",
     description: "Buy rice, apples and potatos.",
     completed: false,
+    id: 6,
   },
   {
     name: "Bank account",
     description: "Open a bank account for my freelance business.",
     completed: false,
+    id: 7,
   },
 ]);
 
@@ -49,11 +56,20 @@ let newTask = { completed: false };
 
 function addTask() {
   if (newTask.name && newTask.description) {
+    newTask.id = Math.max(...tasks.map((task) => task.id)) + 1;
     tasks.push(newTask);
     newTask = { completed: false };
   } else {
     alert("Please enter the title and description for the task.");
   }
+}
+
+function toggleCompleted(id) {
+  tasks.forEach((task) => {
+    if (task.id === id) {
+      task.completed = !task.completed;
+    }
+  });
 }
 </script>
 
@@ -78,9 +94,12 @@ function addTask() {
     </div>
 
     <div class="tasks">
-
-      <Task v-for="(task, index) in tasks" :task="task" :key="index" />
-      
+      <Task
+        @toggleCompleted="toggleCompleted"
+        v-for="(task, index) in tasks"
+        :task="task"
+        :key="index"
+      />
     </div>
 
     <div class="add-task">
@@ -167,8 +186,6 @@ function addTask() {
     grid-template-columns: repeat(1, 1fr);
   }
 }
-
-
 
 .add-task {
   margin-top: 60px;
