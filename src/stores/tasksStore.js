@@ -52,6 +52,8 @@ export const useTasksStore = defineStore("tasks", () => {
 
   let filterBy = ref("");
 
+  let modalIsActive = ref(false);
+
   function setFilter(value) {
     filterBy.value = value;
   }
@@ -67,11 +69,11 @@ export const useTasksStore = defineStore("tasks", () => {
     }
   });
 
-  function addTask() {
+  function addTask(newTask) {
     if (newTask.name && newTask.description) {
       newTask.id = Math.max(...tasks.map((task) => task.id)) + 1;
       tasks.push(newTask);
-      newTask = { completed: false };
+      closeModal();
     } else {
       alert("Please enter the title and description for the task.");
     }
@@ -85,6 +87,14 @@ export const useTasksStore = defineStore("tasks", () => {
     });
   }
 
+  function openModal() {
+    modalIsActive.value = true;
+  }
+
+  function closeModal() {
+    modalIsActive.value = false;
+  }
+
   return {
     tasks,
     filterBy,
@@ -92,5 +102,8 @@ export const useTasksStore = defineStore("tasks", () => {
     filteredTasks,
     addTask,
     toggleCompleted,
+    openModal,
+    closeModal,
+    modalIsActive,
   };
 });
