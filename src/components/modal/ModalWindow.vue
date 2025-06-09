@@ -8,7 +8,8 @@ import ModalCloseButton from "./ModalCloseButton.vue";
 
       <ModalCloseButton @click="$emit('closePopup')" />
 
-      <div class="form">Your Popup Content Goes Here</div>
+      <slot></slot>
+      
     </div>
   </div>
 </template>
