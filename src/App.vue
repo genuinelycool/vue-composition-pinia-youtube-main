@@ -4,56 +4,11 @@ import Task from "./components/Task.vue";
 import Filter from "./components/Filter.vue";
 import ModalWindow from "./components/modal/ModalWindow.vue";
 import AddTaskModal from "./components/modal/AddTaskModal.vue";
+import { useTasksStore } from "./stores/tasksStore.js";
 
-// ref for primitives - numbers, stings, booleans, etc.
 const appName = "Tasks Manager";
 
-// reactive for arrays and objects
-let tasks = reactive([
-  {
-    name: "Website design",
-    description: "Define the style guide, branding and create the webdesign on Figma.",
-    completed: true,
-    id: 1,
-  },
-  {
-    name: "Website development",
-    description: "Develop the portfolio website using Vue JS.",
-    completed: false,
-    id: 2,
-  },
-  {
-    name: "Hosting and infrastructure",
-    description: "Define hosting, domain and infrastructure for the portfolio website.",
-    completed: false,
-    id: 3,
-  },
-  {
-    name: "Composition API",
-    description:
-      "Learn how to use the composition API and how it compares to the options API.",
-    completed: true,
-    id: 4,
-  },
-  {
-    name: "Pinia",
-    description: "Learn how to setup a store using Pinia.",
-    completed: true,
-    id: 5,
-  },
-  {
-    name: "Groceries",
-    description: "Buy rice, apples and potatos.",
-    completed: false,
-    id: 6,
-  },
-  {
-    name: "Bank account",
-    description: "Open a bank account for my freelance business.",
-    completed: false,
-    id: 7,
-  },
-]);
+const store = useTasksStore();
 
 let newTask = { completed: false };
 
@@ -64,20 +19,20 @@ let modalIsActive = ref(false);
 const filteredTasks = computed(() => {
   switch (filterBy.value) {
     case "todo":
-      return tasks.filter((task) => !task.completed);
+      return store.tasks.filter((task) => !task.completed);
       break;
     case "done":
-      return tasks.filter((task) => task.completed);
+      return store.tasks.filter((task) => task.completed);
       break;
     default:
-      return tasks;
+      return store.tasks;
   }
 });
 
 function addTask() {
   if (newTask.name && newTask.description) {
-    newTask.id = Math.max(...tasks.map((task) => task.id)) + 1;
-    tasks.push(newTask);
+    newTask.id = Math.max(...store.tasks.map((task) => task.id)) + 1;
+    store.tasks.push(newTask);
     newTask = { completed: false };
   } else {
     alert("Please enter the title and description for the task.");
@@ -85,7 +40,7 @@ function addTask() {
 }
 
 function toggleCompleted(id) {
-  tasks.forEach((task) => {
+  store.tasks.forEach((task) => {
     if (task.id === id) {
       task.completed = !task.completed;
     }
@@ -112,18 +67,13 @@ function setFilter(value) {
     <Filter :filterBy="filterBy" @setFilter="setFilter" />
 
     <div class="tasks">
-      <Task
-        @toggleCompleted="toggleCompleted"
-        v-for="(task, index) in filteredTasks"
-        :task="task"
-        :key="index"
-      />
+      <Task @toggleCompleted="toggleCompleted" v-for="(task, index) in filteredTasks" :task="task" :key="index" />
     </div>
 
     <ModalWindow @closePopup="modalIsActive = false" v-if="modalIsActive">
       <AddTaskModal />
     </ModalWindow>
-    
+
   </main>
 </template>
 
