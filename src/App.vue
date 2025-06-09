@@ -12,44 +12,8 @@ const store = useTasksStore();
 
 let newTask = { completed: false };
 
-let filterBy = ref("");
-
 let modalIsActive = ref(false);
 
-const filteredTasks = computed(() => {
-  switch (filterBy.value) {
-    case "todo":
-      return store.tasks.filter((task) => !task.completed);
-      break;
-    case "done":
-      return store.tasks.filter((task) => task.completed);
-      break;
-    default:
-      return store.tasks;
-  }
-});
-
-function addTask() {
-  if (newTask.name && newTask.description) {
-    newTask.id = Math.max(...store.tasks.map((task) => task.id)) + 1;
-    store.tasks.push(newTask);
-    newTask = { completed: false };
-  } else {
-    alert("Please enter the title and description for the task.");
-  }
-}
-
-function toggleCompleted(id) {
-  store.tasks.forEach((task) => {
-    if (task.id === id) {
-      task.completed = !task.completed;
-    }
-  });
-}
-
-function setFilter(value) {
-  filterBy.value = value;
-}
 </script>
 
 <template>
@@ -64,10 +28,10 @@ function setFilter(value) {
       <!-- <input type="text" v-model="appName" /> -->
     </div>
 
-    <Filter :filterBy="filterBy" @setFilter="setFilter" />
+    <Filter />
 
     <div class="tasks">
-      <Task @toggleCompleted="toggleCompleted" v-for="(task, index) in filteredTasks" :task="task" :key="index" />
+      <Task v-for="(task, index) in store.filteredTasks" :task="task" :key="index" />
     </div>
 
     <ModalWindow @closePopup="modalIsActive = false" v-if="modalIsActive">
