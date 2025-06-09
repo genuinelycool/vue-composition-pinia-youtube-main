@@ -8,6 +8,10 @@ import { useTasksStore } from "./stores/tasksStore.js";
 const appName = "Tasks Manager";
 const store = useTasksStore();
 
+store.$subscribe((mutation, state) => {
+  localStorage.setItem('tasks', JSON.stringify(state.tasks));
+})
+
 </script>
 
 <template>
